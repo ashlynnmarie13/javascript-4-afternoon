@@ -10,34 +10,32 @@
 
 // Do not edit the code below.
 function outer() {
-  var name = 'Tyler';
+  var name = "Tyler";
   return function() {
-    return 'The original name was ' + name;
+    return "The original name was " + name;
   };
 }
 // Do not edit the code above.
-  
+
 /* 
   Above you're given a function that returns another function which has a closure over the name variable.
   Invoke outer saving the return value into another variable called 'inner'.
 */
-  
+
 // Code Here
-
-
+var inner = new outer("Ashlynn");
+console.log(outer("Ashlynn"));
 
 //Once you do that, invoke inner.
 
 //Code Here
-
-
 
 ////////// PROBLEM 2 //////////
 
 // Do not edit the code below.
 function callFriend(name) {
   function dial(number) {
-    return 'Calling ' + name + ' at ' + number
+    return "Calling " + name + " at " + number;
   }
   return dial;
 }
@@ -52,8 +50,8 @@ function callFriend(name) {
 */
 
 //Code Here
-
-
+var callJake = new callFriend("Jake");
+console.log(callJake("435-555-9248"));
 
 ////////// PROBLEM 3 //////////
 
@@ -62,17 +60,20 @@ function callFriend(name) {
 */
 
 //Code Here
+function makeCounter() {
+  var num = 0;
 
-
-
-//Uncomment this once you make your function
-//   var count = makeCounter();
-//   count(); // 1
-//   count(); // 2
-//   count(); // 3
-//   count(); // 4
-
-
+  function counter() {
+    num = num + 1;
+    return num;
+  }
+  return counter;
+}
+var count = makeCounter();
+count(); // 1
+count(); // 2
+count(); // 3
+count(); // 4
 
 ////////// PROBLEM 4 //////////
 
@@ -85,21 +86,44 @@ function callFriend(name) {
   http://stackoverflow.com/questions/17776940/javascript-module-pattern-with-example?answertab=votes#tab-top
 */
 
+// var modularpattern = (function() {
+//   // your module code goes here
+//   var sum = 0 ;
+
+//   return {
+//       add:function() {
+//           sum = sum + 1;
+//           return sum;
+//       },
+//       reset:function() {
+//           return sum = 0;
+//       }
+//   }
+// }());
+// alert(modularpattern.add());    // alerts: 1
+// alert(modularpattern.add());    // alerts: 2
+// alert(modularpattern.reset());  // alerts: 0
+
 function counterFactory(value) {
   // Code here.
 
   return {
-
+    inc: function() {
+      value = value + 1;
+      return value;
+    },
+    dec: function() {
+      value = value - 1;
+      return value;
+    }
   };
 }
 
 counter = counterFactory(10);
-// counter.inc() // 11
-// counter.inc() // 12
-// counter.inc() // 13
-// counter.dec() // 12
-
-
+counter.inc(); // 11
+counter.inc(); // 12
+counter.inc(); // 13
+counter.dec(); // 12
 
 ////////// PROBLEM 5 //////////
 
@@ -109,19 +133,18 @@ counter = counterFactory(10);
   (Hint: don't forget to have a space between the firstname and lastname and a period at the end of the sentence.)
 */
 
-function motivation( firstname, lastname ) {
+function motivation(firstname, lastname) {
   var welcomeText = "You're doing awesome, keep it up";
 
   // code message function here.
-
-  //Uncommment this to return the value of your message function
-  //return message;
+  function message() {
+    return welcomeText + " " + firstname + " " + lastname + ".";
+  }
+  return message;
 }
 
-var greeting = motivation('Billy', 'Bob'); // 'You're doing awesome keep it up Billy Bob.
-
-
-
+var greeting = motivation("Billy", "Bob");
+console.log(greeting); // 'You're doing awesome keep it up Billy Bob.
 ////////// PROBLEM 6 //////////
 
 /*
@@ -136,18 +159,27 @@ var module = (function() {
     location: "Utah"
   };
 
-  function privateMethod(){
-    return "Hi, I'm " + person.name + ", age " + person.age + " from " + person.location;
+  function privateMethod() {
+    return (
+      "Hi, I'm " +
+      person.name +
+      ", age " +
+      person.age +
+      " from " +
+      person.location
+    );
   }
 
   // Anything that is being returned is made public and can be invoked from
   // outside our lexical scope
   return {
     // Code here.
+    publicMethod: function() {
+      return privateMethod();
+    }
   };
 })();
-
-
+module.publicMethod();
 
 ////////// PROBLEM 7 //////////
 
@@ -162,14 +194,19 @@ function secretNumber() {
   var secret = 143;
 
   return {
-    // Code here
+    addToSecret: function(num1) {
+      secret = secret + num1;
+      return secret;
+    },
+    takeAwayFromSecret: function(num2) {
+      secret = secret - num2;
+      return secret;
+    }
   };
 }
 
-
-
 ////////// PROBLEM 8 //////////
-  
+
 /*
   Here we have a for loop that will iterate as long as i is less than or equal to 5.
   What we need to do is console.log(i) so that it logs like so:
@@ -188,9 +225,13 @@ function secretNumber() {
 
 function timeOutCounter() {
   for (var i = 0; i <= 5; i++) {
-    setTimeout(function() {
-      console.log(i);
-    }, i * 1000);
+    setTimeout(newScope(i), i * 1000);
+
+    function newScope(i) {
+      return function() {
+        console.log(i);
+      };
+    }
   }
 }
 timeOutCounter();
